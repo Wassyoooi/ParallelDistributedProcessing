@@ -1,2 +1,5 @@
 # ParallelDistributedProcessing
-これは並列分散処理_E班
+
+## FizzBazzについて説明しちゃうぞ
+
+Fizz,Bazzを返します。
