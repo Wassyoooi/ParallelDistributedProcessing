@@ -1,5 +1,6 @@
 \documentclass[14pt, oneside]{article}     	% use "amsart" instead of "article" for AMSLaTeX format
 \usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\usepackage[dvipdfmx]{hyperref}
 
 \geometry{left=25mm,right=25mm,top=30mm,bottom=30mm}
 \geometry{letterpaper}                   		% ... or a4paper or a5paper or ...
@@ -33,16 +34,24 @@
 }
 %SetFonts
 
-
 \title{並列分散処理  最終レポート}
-\author{大城 慶知}
+\author{チームE　大城 慶知　眞榮城 隆守　伊波卓浩　宮良友也}
 %\date{}							% Activate to display a given date or no date
 
 \begin{document}
 \maketitle
 
+\section*{最終報告書に載せるやつ(あとで消すやつ)}
+
+演習の背景、目的、方法、結果、考察をA410ページ以内で適切にまとめる。
+個々のメンバーの役割分担を明記する。記載がない場合、あるいは、曖昧な場合には、
+減点の対象となる。例えば、あるタスクを複数名で担当した場合でも、個々のメンバーの
+役割をできる限り区別して説明する。
+最終報告書にはソースコードのgithubリポジトリも記載する。
+
 \section{テーマ}
 Pythonにおける非同期処理を用いたI/Oの並列処理を行う。
+
 \section{Python並列処理の基礎知識}
 
 \subsection{スレッドの制約}
@@ -64,70 +73,28 @@ GILとは、Pythonを実行した際に一つだけしかスレッドのリソ�
 
 \subsection{プロセスを用いた}
 
-
 \begin{lstlisting}[caption=シンプレクス法プログラム]
 
 \end{lstlisting}
 
+\section{実験方法}
 
-\section{動作確認}
-\vspace{5mm}
 
-動作確認は求められている動作を考慮しながら行った。
-SW1・SW2・SW3とボタンがあり、それぞれ以下の表のように動作が対応している。
-\begin{center}
-  \begin{table}[htb]
-    \begin{tabular}{|l|c|} \hline
-      ボタン名 & 動作 \\ \hline \hline
-      SW1 & スタート・ストップ \\ \hline
-      SW2 & リセット \\ \hline
-      SW3 & LAPボタン \\ \hline
-    \end{tabular}
-  \end{table}
-\end{center}
+\section{実行結果}
 
-まず、前提としてそれぞれが動作することを確認する。
 
-SW1は、、LCDモジュールにLEDと同様のタイマー機能が表示され、スタートとストップの動きが正常であるか。
-SW2は、リセットボタンを押すとLCDモジュールの表示が初期の状態に戻るか。
-SW3は、押したタイミングでLCDモジュールにタイマー表示が適切にされるかどうか。
 
-\vspace{5mm}
-次に、それぞれの動作が重なったときに適切な動作ができるかを確認する。
 
-ストップウォッチが止まっているときに、SW3ボタンを無効にできているか。
-リセットボタンを押した際に、LAPボタンで変更した表示も初期化できているか。
+\section{考察}
+
+
 
 
 
 
 \section{感想・意見}
+\section*{GitHubのURL}
 
-\section{数理計画・解答}
-3.次の線形計画問題を解きなさい。絵画存在する場合は最適解(x_1, X_2)とそのときのZを答えなさい。(20点)
-
-max z = x_1-x_2
-subject to
--2x1 + x2 <= 2
-x_1 - 2x_2 <= 2
-x_1 + x_2 <= 5
-x1, x2 >= 0
-
-用語の理解
-概念
-
-最適化の古典的問題
-シンプレクス法
-停止条件存在条件
-応用問題
-0-1計画問題の解法
-
-\begin{thebibliography}{9}
-  \bibitem{harris} Pythonをとりまく並行/非同期の話,  https://tell-k.github.io/pyconjp2017/
-  \bibitem{susan} S. M. Smith and J. M. Brady,
-    ``SUSAN|A new approach to low level image processing,'' Int. J. Comput.
-    Vis., vol.23, no.1, pp.45-78, May 1997.
-\end{thebibliography}
-
+\subsection*{https://github.com/e165719/ParallelDistributedProcessing}
 
 \end{document}
