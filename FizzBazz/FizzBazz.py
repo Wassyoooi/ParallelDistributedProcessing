@@ -13,8 +13,8 @@ def fizzbuzz(i):
     return str(i)
 
 async def task_fizzbuzz(prefix):
-    for x in range(1, 10):
-        # await asyncio.sleep(1)
+    for x in range(1, 31):
+        await asyncio.sleep(0.3)
         print(prefix + "{}:".format(str(x)) + fizzbuzz(x))
     return None
 
