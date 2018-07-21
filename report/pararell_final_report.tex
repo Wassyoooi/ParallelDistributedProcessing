@@ -1,6 +1,7 @@
 \documentclass[14pt, oneside]{article}     	% use "amsart" instead of "article" for AMSLaTeX format
 \usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
 \usepackage[dvipdfmx]{hyperref}
+\usepackage{here}
 
 \geometry{left=25mm,right=25mm,top=30mm,bottom=30mm}
 \geometry{letterpaper}                   		% ... or a4paper or a5paper or ...
@@ -49,46 +50,58 @@
 役割をできる限り区別して説明する。
 最終報告書にはソースコードのgithubリポジトリも記載する。
 
-\section{テーマ}
-Pythonにおける非同期処理を用いたI/Oの並列処理を行う。
+\section{演習の背景}
+「講義で説明した並列分散処理を実践し、他者に有益な情報となるように共有せよ。」という課題が渡された。
+
+b3前期はメンバーが忙しく時間も取れないので軽量かつ有益な情報をということで、
+GPUマシンを使った並列処理を断腸の思いで断念し、Pythonにおける非同期処理を用いたI/Oの並列処理を行うことにした。
+
+\section{目的}
+Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
+async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
+
 
 \section{Python並列処理の基礎知識}
 
 \subsection{スレッドの制約}
 Pythonでは、GIL(Global Interpreter Lock)と呼ばれる制約がある。
-GILとは、Pythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
+GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のようにPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
 そのため、PythonのCPUバウンドの並列処理はプロセスを使って、I/Oバウンドの並列処理はスレッドを行う事が多い。
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm]{multithred_iobound.png}
-  \caption{林檎の図}
+  \caption{マルチスレッドI/Oバウンド}
+  \label{multithred_iobound}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm]{multithred_cpubound.png}
-  \caption{林檎の図}
+  \caption{マルチスレッドCPUバウンド}
+  \label{multithred_cpubound}
 \end{figure}
+
+
+\subsection{asyncとawait}
+
 
 \subsection{プロセスを用いた}
 
-\begin{lstlisting}[caption=シンプレクス法プログラム]
-
-\end{lstlisting}
 
 \section{実験方法}
-HTTPのGETを用いて実験を行った．
-GETを複数回実行する場合を考えると，
+
+HTTPのGETを用いて実験を行った。
+GETを複数回実行する場合を考えると、
 逐次処理の場合ではレスポンスがあるまで
-次のGETを送信することができない．
+次のGETを送信することができない。
 これを並列処理により
 レスポンスを待つことなく
-次のGETを実行した．
+次のGETを実行した。
 これにより効率よく
-GETを実行し，
+GETを実行し、
 結果を受け取ることができると
-想定した．
+想定した。
 
 \section{実行結果}
 
@@ -103,86 +116,22 @@ example4.pyはスレッドを使用。\\
 
 実行結果を以下に示す。
 
-・example1.py
-\begin{lstlisting}
-% python example1.py
-1.7710762023925781
-3.6481258869171143
-5.234184980392456
-6.819124937057495
-8.661988735198975
-10.357062816619873
-12.127899885177612
-13.939480066299438
-15.66226577758789
-17.136775016784668
-18.71082091331482
-22.602702856063843
-24.2241370677948
-25.92159104347229
-27.67835807800293
-29.555225133895874
-31.347226858139038
-33.13314199447632
-34.98287010192871
-36.86141490936279
-\end{lstlisting}
+\lstinputlisting[caption=example1.py,label=1]{../HttpRequest/sequentially}
 
+\lstinputlisting[caption=example2.py,label=2]{../HttpRequest/async_await20}
 
-・example2.py
-\begin{lstlisting}
-% python example2.py 
-6.204233169555664
-6.204301834106445
-6.204308032989502
-6.204311847686768
-6.204314947128296
-6.204318046569824
-6.204322099685669
-6.204324960708618
-6.2043280601501465
-6.204332113265991
-6.20433497428894
-6.204339027404785
-6.2043421268463135
-6.204345941543579
-6.204349040985107
-6.204353094100952
-6.204355955123901
-6.204360008239746
-6.204363107681274
-6.204365968704224
-\end{lstlisting}
+\lstinputlisting[caption=example3.py,label=3]{../HttpRequest/async_await5}
 
-・example3.py
-\begin{lstlisting}
-% python example3.py
-1.983794927597046
-1.9838616847991943
-1.983867883682251
-1.9838709831237793
-1.983874797821045
-3.5528876781463623
-3.552910804748535
-3.5529158115386963
-3.5529186725616455
-3.552921772003174
-5.265967845916748
-5.265992879867554
-5.265997648239136
-5.2660017013549805
-5.266004800796509
-6.929059743881226
-6.929084777832031
-6.929089784622192
-6.929093837738037
-6.929096937179565
-\end{lstlisting}
+\lstinputlisting[caption=example4.py,label=4]{../HttpRequest/thread}
 
-・example4.py
-\begin{lstlisting}
-あいうえお
-\end{lstlisting}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=10cm]{time.png}
+  \caption{実行結果}
+\end{figure}
+
+こうなりました。
+
 
 \section{考察}
 
