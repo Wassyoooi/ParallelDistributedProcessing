@@ -49,27 +49,43 @@
 役割をできる限り区別して説明する。
 最終報告書にはソースコードのgithubリポジトリも記載する。
 
-\section{テーマ}
-Pythonにおける非同期処理を用いたI/Oの並列処理を行う。
+\section{演習の背景}
+「講義で説明した並列分散処理を実践し、他者に有益な情報となるように共有せよ。」という課題が渡された。
+
+b3前期はメンバーが忙しく時間も取れないので軽量かつ有益な情報をということで、
+GPUマシンを使った並列処理を断腸の思いで断念し、Pythonにおける非同期処理を用いたI/Oの並列処理を行うことにした。
+
+\section{目的}
+Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
+async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
+
 
 \section{Python並列処理の基礎知識}
 
 \subsection{スレッドの制約}
 Pythonでは、GIL(Global Interpreter Lock)と呼ばれる制約がある。
-GILとは、Pythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
+GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のようにPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
 そのため、PythonのCPUバウンドの並列処理はプロセスを使って、I/Oバウンドの並列処理はスレッドを行う事が多い。
+
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=10cm]{multithred_iobound.png}
-  \caption{林檎の図}
+  \caption{マルチスレッドI/Oバウンド}
+  \label{multithred_iobound}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=10cm]{multithred_cpubound.png}
-  \caption{林檎の図}
+  \caption{マルチスレッドCPUバウンド}
+  \label{multithred_cpubound}
 \end{figure}
+
+
+
+\subsection{asyncとawait}
+
 
 \subsection{プロセスを用いた}
 
@@ -78,19 +94,28 @@ GILとは、Pythonを実行した際に一つだけしかスレッドのリソ�
 \end{lstlisting}
 
 \section{実験方法}
-HTTPのGETを用いて実験を行った．
-GETを複数回実行する場合を考えると，
+
+HTTPのGETを用いて実験を行った。
+GETを複数回実行する場合を考えると、
 逐次処理の場合ではレスポンスがあるまで
-次のGETを送信することができない．
+次のGETを送信することができない。
 これを並列処理により
 レスポンスを待つことなく
-次のGETを実行した．
+次のGETを実行した。
 これにより効率よく
-GETを実行し，
+GETを実行し、
 結果を受け取ることができると
-想定した．
+想定した。
 
 \section{実行結果}
+
+ああ
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=10cm]{time.png}
+  \caption{実行結果}
+\end{figure}
 
 こうなりました。
 
