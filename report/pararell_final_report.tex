@@ -60,12 +60,22 @@ GPUマシンを使った並列処理を断腸の思いで断念し、Pythonに�
 Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
 async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
 
+\section{メンバーの担当}
+
+大城 慶知 素早いおじさん
+
+眞榮城 隆守 Pythonファイルの記述。グラフの生成
+
+伊波卓浩 FizzBuzzのデモ作成
+
+宮良友也 カービィー
 
 \section{Pythonの事前知識}
 
 \subsection{スレッドの制約}
 Pythonでは、GIL(Global Interpreter Lock)と呼ばれる制約がある。
-GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のように、CPUバウンドでPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
+GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のように、
+CPUバウンドでPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
 そのため、PythonのCPUバウンドの並列処理はプロセスを使って、I/Oバウンドの並列処理はスレッドを行う事が多い。
 
 \begin{figure}[H]
@@ -82,6 +92,7 @@ GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}�
   \label{multithred_cpubound}
 \end{figure}
 
+\newpage
 
 \subsection{asyncとawait}
 asyncとawaitがどのような処理を行うのか以下のコードを実行して動作を確認した。
@@ -103,44 +114,55 @@ asyncとawaitがどのような処理を行うのか以下のコードを実行�
 75223:6:Fizz
 \end{lstlisting}
 
-実行結果からFizzBuzzのコードをスリープさせているのにもかかわらず、
+実行結果からFizzBuzz関数を呼び出す際にsleepしていると、
+コンテキストスイッチと呼ばれる、実行できるプログラムを先に実行する処理を行うからだと考えられる。
+ただ実行はCPUバウンドなので1スレッドしか利用できずに、速度としてはかなり遅かった。
 
-
+\newpage
 
 \section{実験方法}
 
-HTTPのGETを用いて実験を行った。
+HTTPのGETを用いて実験を行う。
 GETを複数回実行する場合を考えると、
 逐次処理の場合ではレスポンスがあるまで
 次のGETを送信することができない。
-これを並列処理により
+async-awaitまたはThreadPoolExecutorを用いることで、
 レスポンスを待つことなく
-次のGETを実行した。
-これにより効率よく
-GETを実行し、
+次のGETを実行することで効率よく
 結果を受け取ることができると
 想定した。
 
+それぞれ逐次処理、async-await(20回渡し)、async-awaitのみ(5回ずつ)、async-await + ThreadPoolExecutorに分けて
+琉球大学情報工学科へのGETを20回連続で行った。
+
+また、上記の順でコード1 \ref{example1}、コード2 \ref{example2}、コード3 \ref{example3}、コード4 \ref{example4}に示したとおりである。
+
 \lstinputlisting[caption=逐次処理,label=example1]{../HttpRequest/example1.py}
 
-\lstinputlisting[caption=async-awaitのみ,label=example2]{../HttpRequest/example2.py}
+\lstinputlisting[caption=async-awaitのみ(20個渡し),label=example2]{../HttpRequest/example2.py}
 
-\lstinputlisting[caption=async-awaitのみ(5回ずつ),label=example3]{../HttpRequest/example3.py}
+\newpage
 
-\lstinputlisting[caption=async-await + MultiPoolExector,label=example4]{../HttpRequest/example4.py}
+\lstinputlisting[caption=async-awaitのみ(4回ずつ),label=example3]{../HttpRequest/example3.py}
+
+\lstinputlisting[caption=async-await + ThreadPoolExecutor,label=example4]{../HttpRequest/example4.py}
+
+\newpage
 
 \section{実行結果}
 
-example1.pyは逐次処理をしてくれる
-スクリプト。\\
-example2.pyはコルーチンを
-20個一気に呼び出す。\\
-example3.pyはコルーチンを
-5個ずつ4回呼び出している。\\
-example4.pyはスレッドを使用。\\
+% example1.pyは逐次処理をしてくれる
+% スクリプト。\\
+% example2.pyはコルーチンを
+% 20個一気に呼び出す。\\
+% example3.pyはコルーチンを
+% 5個ずつ4回呼び出している。\\
+% example4.pyはスレッドを使用。\\
 
 
-実行結果を以下に示す。
+実行結果をFigure\ref{result}に示した。
+Figure \ref{result}を見ると、逐次処理、async-awaitのみ(4回ずつ)、
+async-awaitのみ(20個渡し)、async-await + ThreadPoolExecutorの順で時間がかかっていることがわかる。
 
 \lstinputlisting[caption=example1.py,label=1]{../HttpRequest/sequentially}
 
@@ -152,20 +174,23 @@ example4.pyはスレッドを使用。\\
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=13cm]{time.png}
+  \includegraphics[width=13cm]{time2.png}
   \caption{実行結果}
+  \label{result}
 \end{figure}
-
-こうなりました。
 
 
 \section{考察}
+async-awaitを用いた非同期処理は、コルーチンを呼び出して行っているので高速であることがグラフから読み取れた。
+また、async-awaitでプログラムを4回に分けて渡したとしても実行時間が変わらなかったことから、
+async-awaitは動的にタスクを増やしても実行時間に影響が出にくいことが考えられる。
 
+async-await + ThreadPoolExecutorは少しだけ実行速度が早くなったことから、
+Threadの数が増えて並列度が増したと考えられる。
 
 
 \section{感想・意見}
-\section*{GitHubのURL}
-
+\section{GitHubのURL}
 \subsection*{https://github.com/e165719/ParallelDistributedProcessing}
 
 \end{document}
