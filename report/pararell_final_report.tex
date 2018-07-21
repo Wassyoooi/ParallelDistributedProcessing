@@ -15,7 +15,7 @@
 \renewcommand{\lstlistingname}{コード}
 %SetFonts
 \lstset{%
-  language={vhdl},
+  language={Python},
   basicstyle={\small},%
   identifierstyle={\small},%
   commentstyle={\small\itshape},%
@@ -61,32 +61,50 @@ Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
 async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
 
 
-\section{Python並列処理の基礎知識}
+\section{Pythonの事前知識}
 
 \subsection{スレッドの制約}
 Pythonでは、GIL(Global Interpreter Lock)と呼ばれる制約がある。
-GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のようにPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
+GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}のように、CPUバウンドでPythonを実行した際に一つだけしかスレッドのリソースを起動できない制約である。
 そのため、PythonのCPUバウンドの並列処理はプロセスを使って、I/Oバウンドの並列処理はスレッドを行う事が多い。
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=10cm]{multithred_iobound.png}
+  \includegraphics[width=12cm]{multithred_iobound.png}
   \caption{マルチスレッドI/Oバウンド}
   \label{multithred_iobound}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=10cm]{multithred_cpubound.png}
+  \includegraphics[width=12cm]{multithred_cpubound.png}
   \caption{マルチスレッドCPUバウンド}
   \label{multithred_cpubound}
 \end{figure}
 
 
 \subsection{asyncとawait}
+asyncとawaitがどのような処理を行うのか以下のコードを実行して動作を確認した。
+\lstinputlisting[caption=非同期処理のFizzBuzz,label=FizzBuzz]{../FizzBazz/FizzBazz.py}
 
+\begin{lstlisting}[caption=FizzBuzz実行結果]
+75219:6:Fizz
+8282:6:Fizz
+57464:6:Fizz
+75220:6:Fizz
+8283:6:Fizz
+57465:6:Fizz
+75221:6:Fizz
+8284:6:Fizz
+57466:6:Fizz
+75222:6:Fizz
+8285:6:Fizz
+57467:6:Fizz
+75223:6:Fizz
+\end{lstlisting}
 
-\subsection{プロセスを用いた}
+実行結果からFizzBuzzのコードをスリープさせているのにもかかわらず、
+
 
 
 \section{実験方法}
@@ -102,6 +120,14 @@ GETを複数回実行する場合を考えると、
 GETを実行し、
 結果を受け取ることができると
 想定した。
+
+\lstinputlisting[caption=逐次処理,label=example1]{../HttpRequest/example1.py}
+
+\lstinputlisting[caption=async-awaitのみ,label=example2]{../HttpRequest/example2.py}
+
+\lstinputlisting[caption=async-awaitのみ(5回ずつ),label=example3]{../HttpRequest/example3.py}
+
+\lstinputlisting[caption=async-await + MultiPoolExector,label=example4]{../HttpRequest/example4.py}
 
 \section{実行結果}
 
@@ -126,7 +152,7 @@ example4.pyはスレッドを使用。\\
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=10cm]{time.png}
+  \includegraphics[width=13cm]{time.png}
   \caption{実行結果}
 \end{figure}
 
@@ -134,9 +160,6 @@ example4.pyはスレッドを使用。\\
 
 
 \section{考察}
-
-
-
 
 
 
