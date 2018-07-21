@@ -62,6 +62,13 @@ GILとは、Pythonを実行した際に一つだけしかスレッドのリソ�
   \caption{林檎の図}
 \end{figure}
 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=10cm]{time.png}
+  \caption{林檎の図}
+\end{figure}
+
 \subsection{プロセスを用いた}
 
 
@@ -71,10 +78,10 @@ GILとは、Pythonを実行した際に一つだけしかスレッドのリソ�
 
 
 \section{動作確認}
+
 \vspace{5mm}
 
-動作確認は求められている動作を考慮しながら行った。
-SW1・SW2・SW3とボタンがあり、それぞれ以下の表のように動作が対応している。
+
 \begin{center}
   \begin{table}[htb]
     \begin{tabular}{|l|c|} \hline
@@ -86,41 +93,14 @@ SW1・SW2・SW3とボタンがあり、それぞれ以下の表のように動�
   \end{table}
 \end{center}
 
-まず、前提としてそれぞれが動作することを確認する。
-
-SW1は、、LCDモジュールにLEDと同様のタイマー機能が表示され、スタートとストップの動きが正常であるか。
-SW2は、リセットボタンを押すとLCDモジュールの表示が初期の状態に戻るか。
-SW3は、押したタイミングでLCDモジュールにタイマー表示が適切にされるかどうか。
 
 \vspace{5mm}
-次に、それぞれの動作が重なったときに適切な動作ができるかを確認する。
 
-ストップウォッチが止まっているときに、SW3ボタンを無効にできているか。
-リセットボタンを押した際に、LAPボタンで変更した表示も初期化できているか。
 
 
 
 
 \section{感想・意見}
-
-\section{数理計画・解答}
-3.次の線形計画問題を解きなさい。絵画存在する場合は最適解(x_1, X_2)とそのときのZを答えなさい。(20点)
-
-max z = x_1-x_2
-subject to
--2x1 + x2 <= 2
-x_1 - 2x_2 <= 2
-x_1 + x_2 <= 5
-x1, x2 >= 0
-
-用語の理解
-概念
-
-最適化の古典的問題
-シンプレクス法
-停止条件存在条件
-応用問題
-0-1計画問題の解法
 
 \begin{thebibliography}{9}
   \bibitem{harris} Pythonをとりまく並行/非同期の話,  https://tell-k.github.io/pyconjp2017/
