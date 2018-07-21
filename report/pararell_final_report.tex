@@ -9,12 +9,13 @@
 \usepackage[dvipdfmx]{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex
 \usepackage{amssymb}
+\usepackage{here}
 
 \usepackage{listings}
 \renewcommand{\lstlistingname}{コード}
 %SetFonts
 \lstset{%
-  language={vhdl},
+  language={Python},
   basicstyle={\small},%
   identifierstyle={\small},%
   commentstyle={\small\itshape},%
@@ -59,8 +60,7 @@ GPUマシンを使った並列処理を断腸の思いで断念し、Pythonに�
 Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
 async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
 
-
-\section{Python並列処理の基礎知識}
+\section{Pythonの事前知識}
 
 \subsection{スレッドの制約}
 Pythonでは、GIL(Global Interpreter Lock)と呼ばれる制約がある。
@@ -68,14 +68,14 @@ GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}�
 そのため、PythonのCPUバウンドの並列処理はプロセスを使って、I/Oバウンドの並列処理はスレッドを行う事が多い。
 
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm]{multithred_iobound.png}
   \caption{マルチスレッドI/Oバウンド}
   \label{multithred_iobound}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm]{multithred_cpubound.png}
   \caption{マルチスレッドCPUバウンド}
@@ -84,14 +84,37 @@ GILとは、Figure \ref{multithred_iobound}と Figure\ref{multithred_cpubound}�
 
 
 
+
 \subsection{asyncとawait}
 
+\begin{lstlisting}[caption=FizzBuzz using async-await]
+import asyncio
+
+def fizzbuzz(i):
+    if i == 15:
+        return 'FizzBuzz'
+    if i % 5 == 0:
+        return 'Buzz'
+    if i % 3 == 0:
+        return 'Fizz'
+    return str(i)
+
+async def task_fizzbuzz(prefix):
+    for x in range(1, 31):
+        await asyncio.sleep(0.3)
+        print(prefix + "{}:".format(str(x)) + fizzbuzz(x))
+    return None
+
+loop = asyncio.get_event_loop()
+# コルーチン1000個生成
+tasks = asyncio.wait([task_fizzbuzz(str(i) + ":") for i in range(1, 1000)])
+loop.run_until_complete(tasks)
+loop.close()
+
+\end{lstlisting}
 
 \subsection{プロセスを用いた}
 
-\begin{lstlisting}[caption=シンプレクス法プログラム]
-
-\end{lstlisting}
 
 \section{実験方法}
 
@@ -106,6 +129,36 @@ GETを複数回実行する場合を考えると、
 GETを実行し、
 結果を受け取ることができると
 想定した。
+
+\begin{lstlisting}[caption=シンプレクス法プログラム]
+# Example 2: asynchronous requests
+import asyncio
+import requests
+import time
+
+start = 0
+
+async def main():
+    start = time.time()
+
+    for num in range(4):
+        loop = asyncio.get_event_loop()
+        futures = [
+            loop.run_in_executor(
+                None,
+                requests.get,
+                'https://ie.u-ryukyu.ac.jp/'
+            )
+            for i in range(5)
+        ]
+        for response in await asyncio.gather(*futures):
+            print(time.time() - start)
+            pass
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
+
+\end{lstlisting}
 
 \section{実行結果}
 
