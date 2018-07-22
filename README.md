@@ -1,5 +1,5 @@
 # ParallelDistributedProcessing
 
-## FizzBazzについて説明しちゃうぞ
+## FizzBuzzについて説明しちゃうぞ
 
-Fizz,Bazzを返します。
+Fizz,Buzzを返します。
