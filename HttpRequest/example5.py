@@ -9,7 +9,7 @@ start = 0
 async def main():
     start = time.time()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
 
         loop = asyncio.get_event_loop()
         futures = [
