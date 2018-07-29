@@ -42,13 +42,13 @@
 \begin{document}
 \maketitle
 
-\section*{最終報告書に載せるやつ(あとで消すやつ)}
-
-演習の背景、目的、方法、結果、考察をA410ページ以内で適切にまとめる。
-個々のメンバーの役割分担を明記する。記載がない場合、あるいは、曖昧な場合には、
-減点の対象となる。例えば、あるタスクを複数名で担当した場合でも、個々のメンバーの
-役割をできる限り区別して説明する。
-最終報告書にはソースコードのgithubリポジトリも記載する。
+% \section*{最終報告書に載せるやつ(あとで消すやつ)}
+%
+% 演習の背景、目的、方法、結果、考察をA410ページ以内で適切にまとめる。
+% 個々のメンバーの役割分担を明記する。記載がない場合、あるいは、曖昧な場合には、
+% 減点の対象となる。例えば、あるタスクを複数名で担当した場合でも、個々のメンバーの
+% 役割をできる限り区別して説明する。
+% 最終報告書にはソースコードのgithubリポジトリも記載する。
 
 \section{演習の背景}
 「講義で説明した並列分散処理を実践し、他者に有益な情報となるように共有せよ。」という課題が渡された。
@@ -57,18 +57,16 @@ b3前期はメンバーが忙しく時間も取れないので軽量かつ有益
 GPUマシンを使った並列処理を断腸の思いで断念し、Pythonにおける非同期処理を用いたI/Oの並列処理を行うことにした。
 
 \section{目的}
-Pythonのスレッドとconcurrentを用いて並列化を行うとともに、
-async awaitの使うことで非同期処理を行いさらに速度向上を目指す。
+PythonのネットワークI/Oに対して、async awaitの使うことで非同期処理を行い、
+スレッドとconcurrentを用いて並列化を行うことで速度向上率を調べる。
 
 \section{メンバーの担当}
 
-大城 慶知 素早いおじさん
+大城 慶知 総括
 
-眞榮城 隆守 Pythonファイルの記述。グラフの生成
+眞榮城 隆守・宮良友也 Pythonファイルの記述。グラフの生成
 
 伊波卓浩 FizzBuzzのデモ作成
-
-宮良友也 カービィー
 
 \section{Pythonの事前知識}
 
@@ -95,30 +93,51 @@ CPUバウンドでPythonを実行した際に一つだけしかスレッドの�
 \newpage
 
 \subsection{asyncとawait}
-asyncとawaitがどのような処理を行うのか以下のコードを実行して動作を確認した。
-\lstinputlisting[caption=非同期処理のFizzBuzz,label=FizzBuzz]{../FizzBazz/FizzBazz.py}
+asyncとawaitがどのような処理を行うのか以下のコード \ref{FizzBuzz} を実行して動作を確認した。
+async_awaitはasyncで定義した関数をawaitで呼び出し実行することで、コルーチンが生成されプログラム実行状態に移り、
+コルーチンごとに非同期処理を行うコードとなっている。
+
+\lstinputlisting[caption=非同期処理のFizzBuzz,label=FizzBuzz]{../FizzBuzz/FizzBuzz.py}
 
 \begin{lstlisting}[caption=FizzBuzz実行結果]
-75219:6:Fizz
-8282:6:Fizz
-57464:6:Fizz
-75220:6:Fizz
-8283:6:Fizz
-57465:6:Fizz
-75221:6:Fizz
-8284:6:Fizz
-57466:6:Fizz
-75222:6:Fizz
-8285:6:Fizz
-57467:6:Fizz
-75223:6:Fizz
+9:12:Fizz
+4:12:Fizz
+5:12:Fizz
+2:12:Fizz
+6:12:Fizz
+3:12:Fizz
+7:12:Fizz
+1:12:Fizz
+8:12:Fizz
+9:13:13
+4:13:13
+5:13:13
+2:13:13
+6:13:13
+3:13:13
+7:13:13
+1:13:13
+8:13:13
+9:14:14
+4:14:14
+5:14:14
+2:14:14
+6:14:14
+3:14:14
+7:14:14
+1:14:14
+8:14:14
+9:15:FizzBuzz
+4:15:FizzBuzz
 \end{lstlisting}
+
+コード \ref{FizzBuzz}は、30までFizzBuzzを10回行う処理を非同期処理で実装している。
 
 実行結果からFizzBuzz関数を呼び出す際にsleepしていると、
 コンテキストスイッチと呼ばれる、実行できるプログラムを先に実行する処理を行うからだと考えられる。
 ただ実行はCPUバウンドなので1スレッドしか利用できずに、速度としてはかなり遅かった。
 
-\newpage
+% \newpage
 
 \section{実験方法}
 
@@ -133,21 +152,21 @@ async-awaitまたはThreadPoolExecutorを用いることで、
 想定した。
 
 それぞれ逐次処理、async-await(20回渡し)、async-awaitのみ(5回ずつ)、async-await + ThreadPoolExecutorに分けて
-琉球大学情報工学科へのGETを20回連続で行った。
+琉球大学情報工学科HPへのGETを20回連続で行うコードを記述した。
 
-また、上記の順でコード1 \ref{example1}、コード2 \ref{example2}、コード3 \ref{example3}、コード4 \ref{example4}に示したとおりである。
+また、上記の順でコード \ref{example1}、コード \ref{example2}、コード \ref{example3}、コード \ref{example4}に示したとおりである。
 
 \lstinputlisting[caption=逐次処理,label=example1]{../HttpRequest/example1.py}
 
+
 \lstinputlisting[caption=async-awaitのみ(20個渡し),label=example2]{../HttpRequest/example2.py}
 
-\newpage
 
 \lstinputlisting[caption=async-awaitのみ(4回ずつ),label=example3]{../HttpRequest/example3.py}
 
 \lstinputlisting[caption=async-await + ThreadPoolExecutor,label=example4]{../HttpRequest/example4.py}
 
-\newpage
+% \newpage
 
 \section{実行結果}
 
@@ -164,13 +183,13 @@ async-awaitまたはThreadPoolExecutorを用いることで、
 Figure \ref{result}を見ると、逐次処理、async-awaitのみ(4回ずつ)、
 async-awaitのみ(20個渡し)、async-await + ThreadPoolExecutorの順で時間がかかっていることがわかる。
 
-\lstinputlisting[caption=example1.py,label=1]{../HttpRequest/sequentially}
-
-\lstinputlisting[caption=example2.py,label=2]{../HttpRequest/async_await20}
-
-\lstinputlisting[caption=example3.py,label=3]{../HttpRequest/async_await5}
-
-\lstinputlisting[caption=example4.py,label=4]{../HttpRequest/thread}
+% \lstinputlisting[caption=逐次処理実行結果.py,label=1]{../HttpRequest/sequentially}
+%
+% \lstinputlisting[caption=async_await20,label=2]{../HttpRequest/async_await20}
+%
+% \lstinputlisting[caption=async_await5,label=3]{../HttpRequest/async_await5}
+%
+% \lstinputlisting[caption=async_await・threadあり,label=4]{../HttpRequest/thread}
 
 \begin{figure}[H]
   \centering
@@ -188,9 +207,22 @@ async-awaitは動的にタスクを増やしても実行時間に影響が出に
 async-await + ThreadPoolExecutorは少しだけ実行速度が早くなったことから、
 Threadの数が増えて並列度が増したと考えられる。
 
+つまり、async-awaitを用いてプログラムの並行に走らせ、Threadで並列に実行させることで
+より並列度が高い処理を実装することが今回の実行結果から読み取れる。
+しかし、Thread数を2とすると実行速度が下がったことからThreadの生成コストが並列度悪くする場合もあるので、
+使う際にはThread数に気をつける必要がある。
 
 \section{感想・意見}
+b3後期が忙しかったために凝った内容にできなかった。
+PythonでのCPUバウンドでの並行処理はあまり使われているイメージが無く、あったとしてもライブラリで完結している
+ものが多いのでCPUバウンドでPythonを取り上げるのがふさわしいのかわからないと感じた。
+
+しかし、GPUを用いた機械学習や画像処理はPythonでもだいぶ重要になってくるので率先してやりたかったが、
+期間内に0から学ぶことを考えると手が出しづらかった。
 \section{GitHubのURL}
 \subsection*{https://github.com/e165719/ParallelDistributedProcessing}
+\begin{thebibliography}{9}
+  \bibitem{harris} Pythonをとりまく並行/非同期の話,  https://tell-k.github.io/pyconjp2017/
+\end{thebibliography}
 
 \end{document}
