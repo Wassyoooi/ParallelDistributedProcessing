@@ -134,8 +134,8 @@ async_awaitはasyncで定義した関数をawaitで呼び出し実行するこ�
 コード \ref{FizzBuzz}は、30までFizzBuzzを10回行う処理を非同期処理で実装している。
 
 実行結果からFizzBuzz関数を呼び出す際にsleepしていると、
-コンテキストスイッチと呼ばれる、実行できるプログラムを先に実行する処理を行うからだと考えられる。
-ただ実行はCPUバウンドなので1スレッドしか利用できずに、速度としてはかなり遅かった。
+コンテキストスイッチと呼ばれる、実行できるプログラムを先に実行する処理を行うのが確認できる。
+% ただ実行はCPUバウンドなので1スレッドしか利用できずに、速度としてはかなり遅かった。
 
 % \newpage
 
@@ -166,7 +166,7 @@ async-awaitまたはThreadPoolExecutorを用いることで、
 
 \lstinputlisting[caption=async-await + ThreadPoolExecutor,label=example4]{../HttpRequest/example4.py}
 
-% \newpage
+\newpage
 
 \section{実行結果}
 
@@ -198,6 +198,17 @@ async-awaitのみ(20個渡し)、async-await + ThreadPoolExecutorの順で時間
   \label{result}
 \end{figure}
 
+また、実験としてFigure: \ref{result3}に示したように、async-awaitでのThread数を5と20で比較してみた。
+Figure: \ref{result3}から見て取れるようにthread数が4倍になると2倍実行速度が早くなっていることがわかる。
+やはりThread数が多いと並列度もあがるようだが、thread数を4倍にして2倍の実行速度であれば、生成コストも大きいように見える。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=13cm]{time3.png}
+  \caption{Thread数比較}
+  \label{result3}
+\end{figure}
+
 
 \section{考察}
 async-awaitを用いた非同期処理は、コルーチンを呼び出して行っているので高速であることがグラフから読み取れた。
@@ -212,6 +223,16 @@ Threadの数が増えて並列度が増したと考えられる。
 しかし、Thread数を2とすると実行速度が下がったことからThreadの生成コストが並列度悪くする場合もあるので、
 使う際にはThread数に気をつける必要がある。
 
+また、コードには記載してないがasync-awaitを用いずにThreadPoolExectorのみで実行した場合の速度比較を行いたかったが、
+参考文献[2] よりThreadPoolExector + Requestsだとデッドロックが起こり実行されないということがわかった。
+そのため速度比較の例としては取り上げていない。
+
+ただasync-awaitを使うことによって、メモリのデッドロックが起こらないことがわかった。
+原因としてはコルーチンでThreadを呼び出す動作がメモリが予め確保される状態になるので、
+requestを投げる際にデッドロックを回避できるのではないかと推測した。
+requestとThreadPoolExectorのデッドロックの原因をソースを見て確かめたわけではないので
+あくまで推測でしかないが、機会があるときにまた詳しく調べたいと思う。
+
 \section{感想・意見}
 b3後期が忙しかったために凝った内容にできなかった。
 PythonでのCPUバウンドでの並行処理はあまり使われているイメージが無く、あったとしてもライブラリで完結している
@@ -223,6 +244,7 @@ PythonでのCPUバウンドでの並行処理はあまり使われているイ�
 \subsection*{https://github.com/e165719/ParallelDistributedProcessing}
 \begin{thebibliography}{9}
   \bibitem{harris} Pythonをとりまく並行/非同期の話,  https://tell-k.github.io/pyconjp2017/
+  \bibitem{harri} ThreadPoolExecutor + Requests == deadlock?,  https://stackoverflow.com/questions/40891497/threadpoolexecutor-requests-deadlock
 \end{thebibliography}
 
 \end{document}
