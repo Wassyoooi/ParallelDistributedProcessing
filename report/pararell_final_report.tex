@@ -35,7 +35,7 @@
 }
 %SetFonts
 
-\title{並列分散処理  最終レポート}
+\title{並列分散処理  最終報告書}
 \author{チームE　大城 慶知　眞榮城 隆守　伊波卓浩　宮良友也}
 %\date{}							% Activate to display a given date or no date
 
@@ -161,6 +161,7 @@ async-awaitまたはThreadPoolExecutorを用いることで、
 
 \lstinputlisting[caption=async-awaitのみ(20個渡し),label=example2]{../HttpRequest/example2.py}
 
+\newpage
 
 \lstinputlisting[caption=async-awaitのみ(4回ずつ),label=example3]{../HttpRequest/example3.py}
 
@@ -233,8 +234,10 @@ requestを投げる際にデッドロックを回避できるのではないか�
 requestとThreadPoolExectorのデッドロックの原因をソースを見て確かめたわけではないので
 あくまで推測でしかないが、機会があるときにまた詳しく調べたいと思う。
 
+\newpage
+
 \section{感想・意見}
-b3後期が忙しかったために凝った内容にできなかった。
+b3前期が忙しかったために凝った内容にできなかった。
 PythonでのCPUバウンドでの並行処理はあまり使われているイメージが無く、あったとしてもライブラリで完結している
 ものが多いのでCPUバウンドでPythonを取り上げるのがふさわしいのかわからないと感じた。
 
